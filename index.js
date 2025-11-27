@@ -30,12 +30,17 @@ app.get('/', (req, res) => {
 
 async function run () {
      try {
-    await client.connect() ;
+    // await client.connect() ; 
     const db = client.db('mega_db') ;
     const productsCollection = db.collection('products') ;
 
        app.get('/products', async (req, res) => {
-          const cursor = productsCollection.find().sort({date_added: -1})
+         const email = req.query.email ;
+          const query = {} ;
+          if(email){
+            query.email  = email
+          }
+          const cursor = productsCollection.find(query).sort({date_added: -1})
           const result = await cursor.toArray() ;
           res.send(result) ;
     }) ;
@@ -77,8 +82,8 @@ async function run () {
         res.send(result)
     })
 
-    await client.db("admin").command({ ping: 1 });
-    console.log("Pinged your deployment. You successfully connected to MongoDB!");
+    // await client.db("admin").command({ ping: 1 });
+    // console.log("Pinged your deployment. You successfully connected to MongoDB!");
      }
      finally {
     // Ensures that the client will close when you finish/error
